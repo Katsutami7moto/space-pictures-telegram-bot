@@ -7,6 +7,26 @@ import requests
 from dotenv import load_dotenv
 
 
+def get_nasa_epic_ids(api_key: str) -> list:
+    api_url = 'https://api.nasa.gov/EPIC/api/natural'
+    params = {
+        'api_key': api_key,
+    }
+    api_response: dict = requests.get(url=api_url, params=params).json()
+    return [(epic['date'], epic['image']) for epic in api_response]
+
+
+def fetch_nasa_epic_pics(api_key: str) -> list:
+    link_base = 'https://api.nasa.gov/EPIC/archive/natural/{}/png/{}.png'
+    epic_pairs = get_nasa_epic_ids(api_key)
+    epic_pics = []
+    for epic in epic_pairs:
+        epic_date, epic_img = epic
+        epic_date = datetime.fromisoformat(epic_date).strftime('%Y/%m/%d')
+        epic_pics.append(link_base.format(epic_date, epic_img))
+    return epic_pics
+
+
 def fetch_nasa_apod_pics(api_key: str, count: int) -> list:
     api_url = 'https://api.nasa.gov/planetary/apod'
     params = {
@@ -21,33 +41,34 @@ def fetch_nasa_apod_pics(api_key: str, count: int) -> list:
 def fetch_spacex_last_launch() -> list:
     api_url = 'https://api.spacexdata.com/v4/launches'
     api_response: dict = requests.get(url=api_url).json()
-    flight: dict
     for flight in api_response:
         flickr_links: list = flight['links']['flickr']['original']
         if flickr_links:
             return flickr_links
 
 
-def get_file_extension_from_url(url: str) -> str:
+def get_file_ext_from_url(url: str) -> str:
     return Path(urlparse(url).path).suffix
 
 
-def download_one_picture(pic_url: str, dir_name: str, file_name: str):
-    pic_response = requests.get(pic_url)
+def download_one_picture(pic_url: str, dir_name: str, file_name: str,
+                         params: dict = None):
+    pic_response = requests.get(pic_url, params=params)
     pic_response.raise_for_status()
     pics_dir = Path(dir_name)
     pics_dir.mkdir(parents=True, exist_ok=True)
-    file_name += get_file_extension_from_url(pic_url)
+    file_name += get_file_ext_from_url(pic_url)
     file_path = pics_dir.joinpath(file_name)
     with open(file_path, 'wb') as file:
         file.write(pic_response.content)
 
 
-def download_pictures_to_dir(pics: list, prefix: str, dir_name: str):
+def download_pictures_to_dir(pics: list, prefix: str, dir_name: str,
+                             params: dict = None):
     now_formatted = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
     for number, link in enumerate(pics):
-        file_name = f'{prefix}_{now_formatted}_{number:02d}'
-        download_one_picture(link, dir_name, file_name)
+        file_name = f'{prefix}_{now_formatted}_{number:03d}'
+        download_one_picture(link, dir_name, file_name, params)
 
 
 def main():
@@ -64,9 +85,20 @@ def main():
 
     # Get APOD pictures from NASA api
     download_pictures_to_dir(
-        fetch_nasa_apod_pics(nasa_api_key, 50),
+        fetch_nasa_apod_pics(nasa_api_key, count=50),
         'nasa_apod',
         dir_name
+    )
+
+    # Get EPIC pictures from NASA
+    nasa_epic_params = {
+        'api_key': nasa_api_key
+    }
+    download_pictures_to_dir(
+        fetch_nasa_epic_pics(nasa_api_key),
+        'nasa_epic',
+        dir_name,
+        params=nasa_epic_params
     )
 
 
