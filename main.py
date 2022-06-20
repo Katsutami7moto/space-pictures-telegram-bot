@@ -12,8 +12,10 @@ def get_nasa_epic_ids(api_key: str) -> list:
     params = {
         'api_key': api_key,
     }
-    api_response: dict = requests.get(url=api_url, params=params).json()
-    return [(epic['date'], epic['image']) for epic in api_response]
+    api_response = requests.get(url=api_url, params=params)
+    api_response.raise_for_status()
+    epic_response: dict = api_response.json()
+    return [(epic['date'], epic['image']) for epic in epic_response]
 
 
 def fetch_nasa_epic_pics(api_key: str) -> list:
@@ -23,7 +25,8 @@ def fetch_nasa_epic_pics(api_key: str) -> list:
     for epic in epic_pairs:
         epic_date, epic_img = epic
         epic_date = datetime.fromisoformat(epic_date).strftime('%Y/%m/%d')
-        epic_pics.append(link_base.format(epic_date, epic_img))
+        epic_link = link_base.format(epic_date, epic_img)
+        epic_pics.append(epic_link)
     return epic_pics
 
 
@@ -33,15 +36,19 @@ def fetch_nasa_apod_pics(api_key: str, count: int) -> list:
         'api_key': api_key,
         'count': count,
     }
-    api_response: dict = requests.get(url=api_url, params=params).json()
-    apods = filter(lambda x: 'hdurl' in x, api_response)
+    api_response = requests.get(url=api_url, params=params)
+    api_response.raise_for_status()
+    apod_response: dict = api_response.json()
+    apods = filter(lambda x: 'hdurl' in x, apod_response)
     return [apod['hdurl'] for apod in apods]
 
 
 def fetch_spacex_last_launch() -> list:
     api_url = 'https://api.spacexdata.com/v4/launches'
-    api_response: dict = requests.get(url=api_url).json()
-    for flight in api_response:
+    api_response = requests.get(url=api_url)
+    api_response.raise_for_status()
+    spacex_response: dict = api_response.json()
+    for flight in spacex_response:
         flickr_links: list = flight['links']['flickr']['original']
         if flickr_links:
             return flickr_links
@@ -73,7 +80,7 @@ def download_pictures_to_dir(pics: list, prefix: str, dir_name: str,
 
 def main():
     load_dotenv()
-    nasa_api_key = os.getenv('NASA_API_KEY')
+    nasa_api_key: str = os.getenv('NASA_API_KEY')
     dir_name = 'images'
 
     # Get pictures from SpaceX api
