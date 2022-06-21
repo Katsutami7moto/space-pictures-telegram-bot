@@ -9,8 +9,13 @@ if __name__ == "__main__":
     telegram_channel_id: str = os.getenv('TELEGRAM_CHANNEL_ID')
     bot = telegram.Bot(token=telegram_api_token)
     print(bot.get_me())
-    first_msg = 'Spaaace...'
+    first_msg = 'Rock it!! round 2'
     bot.send_message(
         chat_id=telegram_channel_id,
         text=first_msg
+    )
+    file_name = 'images/spacex_2022-06-21-13-11-56_001.jpg'
+    bot.send_photo(
+        chat_id=telegram_channel_id,
+        photo=open(file_name, 'rb')
     )
