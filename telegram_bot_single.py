@@ -8,8 +8,8 @@ from telegram_bot_publish_photo import publish_photo
 
 
 def get_rand_img(images_dir: str) -> str:
-    images = tuple(os.walk(images_dir))[0][2]
-    return os.path.join(images_dir, random.choice(images))
+    for root, dirs, files in os.walk(images_dir):
+        return os.path.join(images_dir, random.choice(files))
 
 
 def main(path: str = None):
