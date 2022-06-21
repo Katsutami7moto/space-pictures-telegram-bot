@@ -29,12 +29,11 @@ def fetch_nasa_epic_pics(api_key: str) -> list:
 
 
 if __name__ == "__main__":
-    # Get EPIC pictures from NASA
     nasa_epic_params = {
         'api_key': nasa_api_key
     }
     download_pictures_to_dir(
         fetch_nasa_epic_pics(nasa_api_key),
-        'nasa_epic',
+        prefix='nasa_epic',
         params=nasa_epic_params
     )

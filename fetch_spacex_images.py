@@ -21,7 +21,6 @@ def fetch_spacex_last_launch(launch_id: str) -> list:
 
 
 if __name__ == "__main__":
-    # Get pictures from SpaceX api
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--id', help='ID of launch to get images of')
     args = parser.parse_args()
@@ -32,5 +31,5 @@ if __name__ == "__main__":
         args_id = ''
     download_pictures_to_dir(
         fetch_spacex_last_launch(launch_id=args_id),
-        'spacex'
+        prefix='spacex'
     )

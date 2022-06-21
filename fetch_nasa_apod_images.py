@@ -17,8 +17,7 @@ def fetch_nasa_apod_pics(api_key: str, count: int) -> list:
 
 
 if __name__ == "__main__":
-    # Get APOD pictures from NASA api
     download_pictures_to_dir(
-        fetch_nasa_apod_pics(nasa_api_key, count=50),
-        'nasa_apod'
+        fetch_nasa_apod_pics(nasa_api_key, count=10),
+        prefix='nasa_apod'
     )
