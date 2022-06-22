@@ -23,7 +23,7 @@ IMAGES_DIR='{dir_path}'
 ```
 3. Replace `{nasa_key}` with [NASA API](https://api.nasa.gov/) key you will receive when you sign up.
 4. Replace `{telegram_token}` with API token for the Telegram bot you have created with the help of [BotFather](https://telegram.me/BotFather). This token will look something like this: `958423683:AAEAtJ5Lde5YYfkjergber`.
-5. Replace `{channel_id}` with the identificator (as in the `https://t.me/{identificator}`) of the Telegram channel you have created.
+5. Replace `{channel_id}` with the identificator (as in the `https://t.me/{identificator}`) of the Telegram channel you have created, it would look like this: `TELEGRAM_CHANNEL_ID='@some_channel'`.
 6. Don't forget to appoint the bot as an administrator of the channel (in the channel settings) and give it rights to post in the channel (in `BotFather` menu, `Bot Settings` -> `Channel Admin Rights` -> `Post in the channel`).
 7. Replace `{dir_path}` with the path to directory where you want to store downloaded images. It has default value - when you run one of the `fetch_***.py` scripts, the directory with the name `images` will be created in the unzipped directory. If you want to use the default value, simply delete `IMAGES_DIR='{dir_path}'` line from `.env` file.
 
@@ -32,9 +32,11 @@ IMAGES_DIR='{dir_path}'
 Download images by running either or all of `fetch_***.py` scripts, like this:
 ```commandline
 python3 fetch_nasa_apod_images.py
-
+```
+```commandline
 python3 fetch_nasa_epic_images.py
-
+```
+```commandline
 python3 fetch_spacex_images.py
 ```
 
