@@ -3,20 +3,16 @@ import os
 import random
 import time
 
-from dotenv import load_dotenv
-
-from telegram_bot_publish_photo import publish_photo
+from telegram_bot_publish_photo import publish_photo, images_dir
 
 
-def get_shuffled_images(images_dir: str) -> list:
-    for root, dirs, files in os.walk(images_dir):
+def get_shuffled_images(dir_path: str) -> list:
+    for root, dirs, files in os.walk(dir_path):
         random.shuffle(files)
         return files
 
 
 def main():
-    load_dotenv()
-    images_dir: str = os.getenv('IMAGES_DIR')
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '-d', '--delay',

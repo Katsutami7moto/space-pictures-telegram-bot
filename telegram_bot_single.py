@@ -2,19 +2,15 @@ import argparse
 import os
 import random
 
-from dotenv import load_dotenv
-
-from telegram_bot_publish_photo import publish_photo
+from telegram_bot_publish_photo import publish_photo, images_dir
 
 
-def get_rand_img(images_dir: str) -> str:
-    for root, dirs, files in os.walk(images_dir):
-        return os.path.join(images_dir, random.choice(files))
+def get_rand_img(dir_path: str) -> str:
+    for root, dirs, files in os.walk(dir_path):
+        return os.path.join(dir_path, random.choice(files))
 
 
-def main(path: str = None):
-    load_dotenv()
-    images_dir: str = os.getenv('IMAGES_DIR')
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '-f', '--file',
@@ -22,10 +18,7 @@ def main(path: str = None):
         default=get_rand_img(images_dir)
     )
     args = parser.parse_args()
-    if path:
-        single_image_path: str = path
-    else:
-        single_image_path: str = args.file
+    single_image_path: str = args.file
     publish_photo(single_image_path)
 
 

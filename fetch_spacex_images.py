@@ -16,8 +16,7 @@ def fetch_spacex_last_launch(launch_id: str) -> list:
         check = lambda x: x['links']['flickr']['original']
     launch: dict = list(filter(check, spacex_response))[0]
     flickr_links: list = launch['links']['flickr']['original']
-    if flickr_links:
-        return flickr_links
+    return flickr_links
 
 
 if __name__ == "__main__":
@@ -29,7 +28,8 @@ if __name__ == "__main__":
         args_id = args_id.strip()
     else:
         args_id = ''
-    download_pictures_to_dir(
-        fetch_spacex_last_launch(launch_id=args_id),
-        prefix='spacex'
-    )
+    spacex_images = fetch_spacex_last_launch(launch_id=args_id)
+    if spacex_images:
+        download_pictures_to_dir(spacex_images, prefix='spacex')
+    else:
+        print(f'The launch with id "{args_id}" has no photos.')

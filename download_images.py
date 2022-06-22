@@ -4,6 +4,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 import requests
+from PIL import Image
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -15,6 +16,12 @@ def get_file_ext_from_url(url: str) -> str:
     return Path(urlparse(url).path).suffix
 
 
+def compress_image(image_path: Path):
+    image = Image.open(image_path)
+    image.thumbnail((1920, 1920))
+    image.save(image_path)
+
+
 def download_one_picture(pic_url: str, file_name: str, params: dict = None):
     pic_response = requests.get(pic_url, params=params)
     pic_response.raise_for_status()
@@ -24,14 +31,14 @@ def download_one_picture(pic_url: str, file_name: str, params: dict = None):
     file_path = pics_dir.joinpath(file_name)
     with open(file_path, 'wb') as file:
         file.write(pic_response.content)
+    max_image_size = 10000000
+    image_size = os.path.getsize(file_path)
+    if image_size > max_image_size:
+        compress_image(file_path)
 
 
 def download_pictures_to_dir(pics: list, prefix: str, params: dict = None):
     now_formatted = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
     for number, link in enumerate(pics):
         file_name = f'{prefix}_{now_formatted}_{number:03d}'
-        download_one_picture(
-            link,
-            file_name,
-            params=params
-        )
+        download_one_picture(link, file_name, params=params)
