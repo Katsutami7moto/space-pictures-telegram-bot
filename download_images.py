@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 nasa_api_key: str = os.getenv('NASA_API_KEY')
-images_dir: str = os.getenv('IMAGES_DIR')
+images_dir: str = os.getenv('IMAGES_DIR', default='images')
 
 
 def get_file_ext_from_url(url: str) -> str:
@@ -17,9 +17,12 @@ def get_file_ext_from_url(url: str) -> str:
 
 
 def compress_image(image_path: Path):
-    image = Image.open(image_path)
-    image.thumbnail((1920, 1920))
-    image.save(image_path)
+    max_image_size = 10000000
+    image_size = os.path.getsize(image_path)
+    if image_size > max_image_size:
+        image = Image.open(image_path)
+        image.thumbnail((1920, 1920))
+        image.save(image_path)
 
 
 def download_one_picture(pic_url: str, file_name: str, params: dict = None):
@@ -31,10 +34,7 @@ def download_one_picture(pic_url: str, file_name: str, params: dict = None):
     file_path = pics_dir.joinpath(file_name)
     with open(file_path, 'wb') as file:
         file.write(pic_response.content)
-    max_image_size = 10000000
-    image_size = os.path.getsize(file_path)
-    if image_size > max_image_size:
-        compress_image(file_path)
+    compress_image(file_path)
 
 
 def download_pictures_to_dir(pics: list, prefix: str, params: dict = None):

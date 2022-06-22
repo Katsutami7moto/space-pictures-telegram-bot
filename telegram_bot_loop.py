@@ -15,7 +15,7 @@ def get_shuffled_images(dir_path: str) -> list:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '-d', '--delay',
+        '--delay',
         help='Amount of hours to wait until next post',
         default=4
     )

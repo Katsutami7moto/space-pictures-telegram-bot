@@ -4,7 +4,7 @@ import telegram
 from dotenv import load_dotenv
 
 load_dotenv()
-images_dir: str = os.getenv('IMAGES_DIR')
+images_dir: str = os.getenv('IMAGES_DIR', default='images')
 
 
 def publish_photo(image_path: str):

@@ -21,7 +21,7 @@ def fetch_spacex_last_launch(launch_id: str) -> list:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--id', help='ID of launch to get images of')
+    parser.add_argument('--id', help='ID of launch to get images of')
     args = parser.parse_args()
     if args.id:
         args_id: str = args.id

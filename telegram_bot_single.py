@@ -13,12 +13,13 @@ def get_rand_img(dir_path: str) -> str:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '-f', '--file',
-        help='Picture to post',
+        '--file',
+        help='Picture to post (only the name of file)',
         default=get_rand_img(images_dir)
     )
     args = parser.parse_args()
     single_image_path: str = args.file
+    single_image_path = os.path.join(images_dir, single_image_path)
     publish_photo(single_image_path)
 
 
