@@ -1,7 +1,5 @@
-import os
-
 import requests
-from dotenv import load_dotenv
+from environs import Env
 
 from download_images import download_pictures_to_dir
 
@@ -20,9 +18,10 @@ def fetch_nasa_apod_pics(api_key: str, count: int) -> list:
 
 
 if __name__ == "__main__":
-    load_dotenv()
-    nasa_api_key: str = os.getenv('NASA_API_KEY')
-    images_dir: str = os.getenv('IMAGES_DIR', default='images')
+    env = Env()
+    env.read_env()
+    nasa_api_key: str = env('NASA_API_KEY')
+    images_dir: str = env('IMAGES_DIR', default='images')
     download_pictures_to_dir(
         images_dir,
         fetch_nasa_apod_pics(nasa_api_key, count=10),

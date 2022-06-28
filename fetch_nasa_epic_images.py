@@ -1,8 +1,7 @@
-import os
 from datetime import datetime
 
 import requests
-from dotenv import load_dotenv
+from environs import Env
 
 from download_images import download_pictures_to_dir
 
@@ -31,9 +30,10 @@ def fetch_nasa_epic_pics(api_key: str) -> list:
 
 
 if __name__ == "__main__":
-    load_dotenv()
-    nasa_api_key: str = os.getenv('NASA_API_KEY')
-    images_dir: str = os.getenv('IMAGES_DIR', default='images')
+    env = Env()
+    env.read_env()
+    nasa_api_key: str = env('NASA_API_KEY')
+    images_dir: str = env('IMAGES_DIR', default='images')
     nasa_epic_params = {
         'api_key': nasa_api_key
     }

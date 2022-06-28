@@ -1,8 +1,7 @@
 import argparse
-import os
 
 import requests
-from dotenv import load_dotenv
+from environs import Env
 
 from download_images import download_pictures_to_dir
 
@@ -22,8 +21,9 @@ def fetch_spacex_last_launch(launch_id: str) -> list:
 
 
 if __name__ == "__main__":
-    load_dotenv()
-    images_dir: str = os.getenv('IMAGES_DIR', default='images')
+    env = Env()
+    env.read_env()
+    images_dir: str = env('IMAGES_DIR', default='images')
     parser = argparse.ArgumentParser()
     parser.add_argument('--id', help='ID of launch to get images of')
     args = parser.parse_args()

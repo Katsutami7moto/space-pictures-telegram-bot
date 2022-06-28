@@ -3,7 +3,7 @@ import os
 import random
 import time
 
-from dotenv import load_dotenv
+from environs import Env
 
 from telegram_bot_publish_photo import publish_photo
 
@@ -15,10 +15,11 @@ def get_shuffled_images(dir_path: str) -> list:
 
 
 def main():
-    load_dotenv()
-    images_dir: str = os.getenv('IMAGES_DIR', default='images')
-    api_token: str = os.getenv('TELEGRAM_API_TOKEN')
-    channel_id: str = os.getenv('TELEGRAM_CHANNEL_ID')
+    env = Env()
+    env.read_env()
+    images_dir: str = env('IMAGES_DIR', default='images')
+    api_token: str = env('TELEGRAM_API_TOKEN')
+    channel_id: str = env('TELEGRAM_CHANNEL_ID')
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '--delay',

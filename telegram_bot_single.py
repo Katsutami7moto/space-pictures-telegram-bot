@@ -2,7 +2,7 @@ import argparse
 import os
 import random
 
-from dotenv import load_dotenv
+from environs import Env
 
 from telegram_bot_publish_photo import publish_photo
 
@@ -13,10 +13,11 @@ def get_rand_img(dir_path: str) -> str:
 
 
 def main():
-    load_dotenv()
-    images_dir: str = os.getenv('IMAGES_DIR', default='images')
-    api_token: str = os.getenv('TELEGRAM_API_TOKEN')
-    channel_id: str = os.getenv('TELEGRAM_CHANNEL_ID')
+    env = Env()
+    env.read_env()
+    images_dir: str = env('IMAGES_DIR', default='images')
+    api_token: str = env('TELEGRAM_API_TOKEN')
+    channel_id: str = env('TELEGRAM_CHANNEL_ID')
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '--file',
