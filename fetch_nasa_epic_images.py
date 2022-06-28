@@ -14,7 +14,7 @@ def get_nasa_epic_ids(api_key: str) -> list:
     }
     api_response = requests.get(url=api_url, params=params)
     api_response.raise_for_status()
-    epic_response: dict = api_response.json()
+    epic_response: list = api_response.json()
     return [(epic['date'], epic['image']) for epic in epic_response]
 
 

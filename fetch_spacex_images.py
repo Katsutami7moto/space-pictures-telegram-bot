@@ -12,13 +12,13 @@ def fetch_spacex_last_launch(launch_id: str) -> list:
     api_response = requests.get(url=api_url)
     api_response.raise_for_status()
     spacex_response: list = api_response.json()
-    if launch_id:
-        check = lambda x: x['id'] == launch_id
-    else:
-        check = lambda x: x['links']['flickr']['original']
-    launch: dict = list(filter(check, spacex_response))[0]
-    flickr_links: list = launch['links']['flickr']['original']
-    return flickr_links
+    for launch in spacex_response:
+        flickr_links = launch['links']['flickr']['original']
+        if launch_id:
+            if launch['id'] == launch_id:
+                return flickr_links
+        elif flickr_links:
+            return flickr_links
 
 
 def main():

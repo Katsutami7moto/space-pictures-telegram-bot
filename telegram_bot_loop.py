@@ -10,9 +10,9 @@ from telegram_bot_publish_photo import publish_photo
 
 
 def get_shuffled_images(dir_path: str) -> list:
-    for root, dirs, files in os.walk(dir_path):
-        random.shuffle(files)
-        return files
+    files = os.listdir(dir_path)
+    random.shuffle(files)
+    return files
 
 
 def main():

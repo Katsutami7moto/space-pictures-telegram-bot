@@ -9,8 +9,8 @@ from telegram_bot_publish_photo import publish_photo
 
 
 def get_rand_img(dir_path: str) -> str:
-    for root, dirs, files in os.walk(dir_path):
-        return os.path.join(dir_path, random.choice(files))
+    files = os.listdir(dir_path)
+    return os.path.join(dir_path, random.choice(files))
 
 
 def main():

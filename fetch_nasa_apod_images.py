@@ -13,7 +13,7 @@ def fetch_nasa_apod_pics(api_key: str, count: int) -> list:
     }
     api_response = requests.get(url=api_url, params=params)
     api_response.raise_for_status()
-    apod_response: dict = api_response.json()
+    apod_response: list = api_response.json()
     apods = filter(lambda x: 'hdurl' in x, apod_response)
     return [apod['hdurl'] for apod in apods]
 
