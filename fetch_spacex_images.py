@@ -1,6 +1,8 @@
 import argparse
+import os
 
 import requests
+from dotenv import load_dotenv
 
 from download_images import download_pictures_to_dir
 
@@ -20,6 +22,8 @@ def fetch_spacex_last_launch(launch_id: str) -> list:
 
 
 if __name__ == "__main__":
+    load_dotenv()
+    images_dir: str = os.getenv('IMAGES_DIR', default='images')
     parser = argparse.ArgumentParser()
     parser.add_argument('--id', help='ID of launch to get images of')
     args = parser.parse_args()
@@ -30,6 +34,6 @@ if __name__ == "__main__":
         args_id = ''
     spacex_images = fetch_spacex_last_launch(launch_id=args_id)
     if spacex_images:
-        download_pictures_to_dir(spacex_images, prefix='spacex')
+        download_pictures_to_dir(images_dir, spacex_images, prefix='spacex')
     else:
         print(f'The launch with id "{args_id}" has no photos.')

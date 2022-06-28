@@ -2,7 +2,9 @@ import argparse
 import os
 import random
 
-from telegram_bot_publish_photo import publish_photo, images_dir
+from dotenv import load_dotenv
+
+from telegram_bot_publish_photo import publish_photo
 
 
 def get_rand_img(dir_path: str) -> str:
@@ -11,6 +13,10 @@ def get_rand_img(dir_path: str) -> str:
 
 
 def main():
+    load_dotenv()
+    images_dir: str = os.getenv('IMAGES_DIR', default='images')
+    api_token: str = os.getenv('TELEGRAM_API_TOKEN')
+    channel_id: str = os.getenv('TELEGRAM_CHANNEL_ID')
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '--file',
@@ -20,7 +26,7 @@ def main():
     args = parser.parse_args()
     single_image_path: str = args.file
     single_image_path = os.path.join(images_dir, single_image_path)
-    publish_photo(single_image_path)
+    publish_photo(api_token, channel_id, single_image_path)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,9 @@
-import requests
+import os
 
-from download_images import download_pictures_to_dir, nasa_api_key
+import requests
+from dotenv import load_dotenv
+
+from download_images import download_pictures_to_dir
 
 
 def fetch_nasa_apod_pics(api_key: str, count: int) -> list:
@@ -17,7 +20,11 @@ def fetch_nasa_apod_pics(api_key: str, count: int) -> list:
 
 
 if __name__ == "__main__":
+    load_dotenv()
+    nasa_api_key: str = os.getenv('NASA_API_KEY')
+    images_dir: str = os.getenv('IMAGES_DIR', default='images')
     download_pictures_to_dir(
+        images_dir,
         fetch_nasa_apod_pics(nasa_api_key, count=10),
         prefix='nasa_apod'
     )
