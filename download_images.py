@@ -11,8 +11,7 @@ def get_file_ext_from_url(url: str) -> str:
     return Path(urlparse(url).path).suffix
 
 
-def compress_image(image_path: Path):
-    max_image_size = 10000000
+def compress_image(image_path: Path, max_image_size: int = 10000000):
     image_size = os.path.getsize(image_path)
     if image_size > max_image_size:
         image = Image.open(image_path)
@@ -20,23 +19,25 @@ def compress_image(image_path: Path):
         image.save(image_path)
 
 
-def download_one_picture(images_dir: str, pic_url: str, file_name: str,
-                         params: dict = None):
+def download_picture(images_path: Path, pic_url: str, file_name: str,
+                     params: dict = None) -> Path:
     pic_response = requests.get(pic_url, params=params)
     pic_response.raise_for_status()
-    pics_dir = Path(images_dir)
-    pics_dir.mkdir(parents=True, exist_ok=True)
-    file_path = pics_dir.joinpath(
+    file_path = images_path.joinpath(
         f'{file_name}{get_file_ext_from_url(pic_url)}'
     )
     with open(file_path, 'wb') as file:
         file.write(pic_response.content)
-    compress_image(file_path)
+    return file_path
 
 
-def download_pictures_to_dir(images_dir: str, pics: list, prefix: str,
-                             params: dict = None):
+def download_pictures_to_dir(images_path: Path, pics: list, prefix: str,
+                             params: dict = None) -> list:
     now_formatted = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+    downloaded_pictures = []
     for number, link in enumerate(pics):
         file_name = f'{prefix}_{now_formatted}_{number:03d}'
-        download_one_picture(images_dir, link, file_name, params=params)
+        downloaded_pictures.append(
+            download_picture(images_path, link, file_name, params=params)
+        )
+    return downloaded_pictures

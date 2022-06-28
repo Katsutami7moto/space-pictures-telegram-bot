@@ -1,7 +1,8 @@
 import requests
 from environs import Env
+from pathlib import Path
 
-from download_images import download_pictures_to_dir
+from download_images import download_pictures_to_dir, compress_image
 
 
 def fetch_nasa_apod_pics(api_key: str, count: int) -> list:
@@ -17,13 +18,21 @@ def fetch_nasa_apod_pics(api_key: str, count: int) -> list:
     return [apod['hdurl'] for apod in apods]
 
 
-if __name__ == "__main__":
+def main():
     env = Env()
     env.read_env()
     nasa_api_key: str = env('NASA_API_KEY')
     images_dir: str = env('IMAGES_DIR', default='images')
-    download_pictures_to_dir(
-        images_dir,
+    images_path = Path(images_dir)
+    images_path.mkdir(parents=True, exist_ok=True)
+    downloaded_pictures = download_pictures_to_dir(
+        images_path,
         fetch_nasa_apod_pics(nasa_api_key, count=10),
         prefix='nasa_apod'
     )
+    for picture in downloaded_pictures:
+        compress_image(picture)
+
+
+if __name__ == "__main__":
+    main()
